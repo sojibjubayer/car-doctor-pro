@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const page = ({ params }) => {
+const Page = ({ params }) => {
   const { data } = useSession();
   const [details, setDetails] = useState({});
   const notify = () => toast("successfully booked!");
@@ -18,6 +18,7 @@ const page = ({ params }) => {
     serviceDetails();
   }, [params]);
   const {price,_id,title}=details;
+  console.log(price)
 
   const handleOrder = async (e) => {
     e.preventDefault()
@@ -32,7 +33,7 @@ const page = ({ params }) => {
     const ServiceTitle=title;
     const order={name,date,email,due,phone,address,serviceId,ServiceTitle}
    
-    const resp=await fetch('http://localhost:3000/checkout/api/booking',{
+    const resp=await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/checkout/api/booking`,{
         method:'POST',
         body:JSON.stringify(order),
         headers:{
@@ -44,7 +45,7 @@ const page = ({ params }) => {
     if(res.message==='successfuly booked'){
       notify()
     }
-    console.log(res)
+    // console.log(res)
    
 
   };
@@ -111,4 +112,4 @@ const page = ({ params }) => {
   );
 };
 
-export default page;
+export default Page;

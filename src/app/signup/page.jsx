@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FaGoogle, FaGithub } from "react-icons/fa";
 
-const login = () => {
+const Signup = () => {
   const handleLogin = async(e) => {
     e.preventDefault();
     const form = e.target;
@@ -12,14 +12,14 @@ const login = () => {
     const email = form.email.value;
     const password = form.password.value;
     const newUser = { name, email,password };
-    const resp=await fetch('http://localhost:3000/signup/api',{
+    const resp=await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/signup/api`,{
       method:'POST',
       body:JSON.stringify(newUser),
       headers:{
         'content-type':'application/json'
       }
     })
-    console.log(resp)
+    // console.log(resp)
     if(resp.status===200){
       e.target.reset()
     }
@@ -93,4 +93,4 @@ const login = () => {
   );
 };
 
-export default login;
+export default Signup;

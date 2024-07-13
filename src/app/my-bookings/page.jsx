@@ -4,13 +4,13 @@ import { useEffect, useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const page = () => {
+const Page = () => {
   const session = useSession();
   const [myBookings, setMyBookings] = useState([]);
   const notify = () => toast("successfully deleted!");
   const getMyBookings = async () => {
     const resp = await fetch(
-      `http://localhost:3000/my-bookings/api/${session?.data?.user?.email}`
+      `${process.env.NEXT_PUBLIC_BASE_URL}/my-bookings/api/${session?.data?.user?.email}`
     );
     const data = await resp.json();
     setMyBookings(data.myBookings);
@@ -21,7 +21,7 @@ const page = () => {
   }, [session]);
 
   const handleDelete=async(id)=>{
-    const deleted=await fetch(`http://localhost:3000/my-bookings/api/booking/${id}`,{
+    const deleted=await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bookings/api/booking/${id}`,{
       method:'DELETE'
     }
     )
@@ -81,4 +81,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

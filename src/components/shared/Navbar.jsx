@@ -1,65 +1,123 @@
 "use client"
-import { signOut, useSession } from "next-auth/react";
-import Image from "next/image";
-import Link from "next/link";
-import { CiSearch } from "react-icons/ci";
+import React, { Suspense } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { FaGoogle, FaGithub } from 'react-icons/fa';
+import { signIn, useSession } from 'next-auth/react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
-const Navbar = () => {
-const session = useSession();
- console.log(session)
+const Login = () => {
+  const router = useRouter();
+  const session = useSession();
+  let path = '/';
+
+  // Wrap useSearchParams() in Suspense
   return (
-   <div className="bg-base-100 ">
-     <div className="navbar container mx-auto">
-      <div className="navbar-start">
-       
-        <Link href={'/'}>
-        <Image src={'/assets/logo.svg'} width={100}  height={60}  />
-        </Link>
-      </div>
-      <div className="navbar-center hidden lg:flex">
-       {
-        linkItems.map(item=><Link className="mr-10 font-semibold" href={item.path}>{item.title}</Link>)
-       }
-      </div>
-      <div className="navbar-end">
-        <CiSearch  className="mr-10"/>
-        <a className="btn btn-primary btn-outline hover:text-orange-700 mr-3">Appointment</a>
-        <div className="flex flex-col items-center justify-center">
-          {
-            session?.data?<Image alt={session?.data?.user?.name} src={session?.data?.user?.image} width={40} height={40} className="rounded-full" />:''
-          }
-          <p>{session?.data?.user?.name}</p>
-        </div>
-        {!session.data?
-        <Link href="/login"><button className="btn btn-primary ml-3 text-white">Login</button></Link>:
-        <button onClick={()=>signOut()}  className="btn btn-primary ml-3 text-white">Logout</button>
-        }
-      </div>
-    </div>
-   </div>
+    <Suspense fallback={<div>Loading...</div>}>
+      <ComponentUsingSearchParams />
+    </Suspense>
   );
-};
-const linkItems=[
-  {
-      title:'Home',
-      path:'/'
-  },
-  {
-      title:'About',
-      path:'/about'
-  },
-  {
-      title:'Services',
-      path:'/services'
-  },
-  {
-      title:'My Bookings',
-      path:'/my-bookings'
-  },
-  {
-      title:'Blog',
-      path:'/blog'
-  },
-]
 
-export default Navbar;
+  function ComponentUsingSearchParams() {
+    const searchParams = useSearchParams();
+    path = searchParams.get('redirect');
+
+    const handleSocialLogin = (provider) => {
+      signIn(provider);
+    };
+
+    const handleLogin = async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const email = form.email.value;
+      const password = form.password.value;
+      const resp = await signIn('credentials', {
+        email,
+        password,
+        redirect: true,
+        callbackUrl: path ? path : '/',
+      });
+      if (resp?.status === 200) {
+        router.push('/');
+      }
+    };
+
+    if (session?.status === 'authenticated') {
+      router.push('/');
+    }
+
+    return (
+      <div className="container mx-auto">
+        <div className="flex justify-center gap-24 my-10">
+          <div className="mt-10">
+            <Image
+              src="/assets/images/login/login.svg"
+              width={'350'}
+              height={'500'}
+              alt="login image"
+            />
+          </div>
+          <div>
+            <form onSubmit={handleLogin} className="border-2 p-10">
+              <h3 className="text-center mb-5 font-semibold">Sign In</h3>
+              <label className="form-control w-full max-w-xs">
+                <div className="label">
+                  <span className="label-text">Email</span>
+                </div>
+                <input
+                  name="email"
+                  type="email"
+                  placeholder="Your email"
+                  className="input input-bordered w-full max-w-xs"
+                />
+              </label>
+              <label className="form-control w-full max-w-xs">
+                <div className="label">
+                  <span className="label-text">Password</span>
+                </div>
+                <input
+                  name="password"
+                  type="password"
+                  placeholder="password"
+                  className="input input-bordered w-full max-w-xs"
+                />
+              </label>
+              <label className="form-control w-full max-w-xs">
+                <input
+                  name="submit"
+                  type="submit"
+                  value="sign in"
+                  className="btn btn-primary text-white font-semibold mt-8"
+                />
+              </label>
+              <p className="my-3 text-center">or sign in with</p>
+              <div className="flex justify-center gap-5 ">
+                <button
+                  onClick={() => handleSocialLogin('google')}
+                  className="btn rounded-full"
+                >
+                  <FaGoogle className="text-green-500 font-semibold" />
+                </button>
+                <button
+                  onClick={() => handleSocialLogin('github')}
+                  className="btn rounded-full"
+                >
+                  <FaGithub className="text-primary font-semibold" />
+                </button>
+              </div>
+              <p className="text-center mt-3">
+                Don&apos;t have an account?
+                <Link href="/signup" className="text-primary">
+                  Sign Up
+                </Link>
+              </p>
+              <div></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    );
+  }
+};
+
+export default Login;

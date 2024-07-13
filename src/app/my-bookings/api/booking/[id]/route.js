@@ -1,5 +1,6 @@
 import { connectDB } from "@/lib/connectDB";
 import { ObjectId } from "mongodb";
+import { NextResponse } from "next/server";
 
 export const DELETE = async (request, { params }) => {
   const db = await connectDB();
@@ -9,9 +10,9 @@ export const DELETE = async (request, { params }) => {
     const resp = await bookingCollection.deleteOne({
       _id: new ObjectId(params.id),
     });
-    return Response.json({ message: "deleted successfully", response: resp });
+    return NextResponse.json({ message: "deleted successfully", NextResponse: resp });
   } catch (error) {
-    return Response.json({ message: "something went wrong" });
+    return NextResponse.json({ message: "something went wrong" });
   }
 };
 
@@ -32,10 +33,9 @@ export const PATCH = async (request, { params }) => {
         upsert:true
     }
     
-    
     );
-    return Response.json({ message: "updated successfully", response: resp });
+    return NextResponse.json({ message: "updated successfully", NextResponse: resp });
   } catch (error) {
-    return Response.json({ message: "something went wrong" });
+    return NextResponse.json({ message: "something went wrong",error });
   }
 };

@@ -51,7 +51,7 @@ const handler = NextAuth({
     async signIn({ user, account }) {
       if (account.provider === "google" || account.provider === "github") {
         const { name, email, image } = user;
-        console.log(name)
+       
         const db =await connectDB();
         try {
           const userCollection=await db.collection('users')
@@ -64,6 +64,8 @@ const handler = NextAuth({
           }
         } catch (error) {
           console.log(error);
+          
+
         }
       } else return user;
     },
