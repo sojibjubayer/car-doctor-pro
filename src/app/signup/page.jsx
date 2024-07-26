@@ -5,7 +5,7 @@ import Link from "next/link";
 import { FaGoogle, FaGithub } from "react-icons/fa";
 
 const Signup = () => {
-  const handleLogin = async(e) => {
+  const handleSignUp = async(e) => {
     e.preventDefault();
     const form = e.target;
     const name=form.name.value;
@@ -25,7 +25,7 @@ const Signup = () => {
     }
   };
   return (
-    <div className="container mx-auto ">
+    <div className="container mx-auto min-h-screen">
       <div className="flex  justify-center gap-24 my-10">
         <div className="mt-10">
           <Image
@@ -36,7 +36,7 @@ const Signup = () => {
           />
         </div>
         <div>
-          <form onSubmit={handleLogin} className="border-2 p-10">
+          <form onSubmit={handleSignUp} className="border-2 p-10">
             <h3 className="text-center mb-5 font-semibold">Sign Up</h3>
             <label className="form-control w-full max-w-xs">
               <div className="label">

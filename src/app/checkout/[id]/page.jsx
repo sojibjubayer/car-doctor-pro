@@ -33,7 +33,7 @@ const Page = ({ params }) => {
     const ServiceTitle=title;
     const order={name,date,email,due,phone,address,serviceId,ServiceTitle}
    
-    const resp=await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/checkout/api/booking`,{
+    const resp=await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/checkout/api/new-booking`,{
         method:'POST',
         body:JSON.stringify(order),
         headers:{

@@ -22,10 +22,13 @@ const Login = () => {
     const searchParams = useSearchParams();
     path = searchParams.get('redirect');
 
+    //SOCIAL LOGIN
     const handleSocialLogin = (provider) => {
       signIn(provider);
     };
 
+
+    //CREDENTIALS LOGIN
     const handleLogin = async (e) => {
       e.preventDefault();
       const form = e.target;
@@ -41,6 +44,7 @@ const Login = () => {
         router.push('/');
       }
     };
+    
 
     if (session?.status === 'authenticated') {
       router.push('/');

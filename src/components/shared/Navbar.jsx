@@ -1,123 +1,82 @@
 "use client"
-import React, { Suspense } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { FaGoogle, FaGithub } from 'react-icons/fa';
-import { signIn, useSession } from 'next-auth/react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { signOut, useSession } from "next-auth/react";
+import Image from "next/image";
+import Link from "next/link";
+import React from "react";
+import { IoCartOutline, IoSearchSharp  } from "react-icons/io5";
 
-const Login = () => {
-  const router = useRouter();
-  const session = useSession();
-  let path = '/';
-
-  // Wrap useSearchParams() in Suspense
+const Navbar = () => {
+ const session = useSession()
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <ComponentUsingSearchParams />
-    </Suspense>
-  );
-
-  function ComponentUsingSearchParams() {
-    const searchParams = useSearchParams();
-    path = searchParams.get('redirect');
-
-    const handleSocialLogin = (provider) => {
-      signIn(provider);
-    };
-
-    const handleLogin = async (e) => {
-      e.preventDefault();
-      const form = e.target;
-      const email = form.email.value;
-      const password = form.password.value;
-      const resp = await signIn('credentials', {
-        email,
-        password,
-        redirect: true,
-        callbackUrl: path ? path : '/',
-      });
-      if (resp?.status === 200) {
-        router.push('/');
-      }
-    };
-
-    if (session?.status === 'authenticated') {
-      router.push('/');
-    }
-
-    return (
-      <div className="container mx-auto">
-        <div className="flex justify-center gap-24 my-10">
-          <div className="mt-10">
-            <Image
-              src="/assets/images/login/login.svg"
-              width={'350'}
-              height={'500'}
-              alt="login image"
-            />
+    <div className="bg-base-100  text-slate-900 border-b-[1px] py-2">
+      <div className="navbar container mx-auto">
+        <div className="navbar-start">
+          <Link href={"/"}>
+            <Image alt="logo" src="/assets/logo.svg" height={60} width={100} />
+          </Link>
+        </div>
+        <div className="navbar-center hidden lg:flex">
+          <div className="flex items-center space-x-6">
+            {navItems.map((item) => (
+              <Link
+                className="font-semibold hover:text-primary duration-300"
+                href={item.path}
+                key={item.path}
+              >
+                {item.title}
+              </Link>
+            ))}
           </div>
-          <div>
-            <form onSubmit={handleLogin} className="border-2 p-10">
-              <h3 className="text-center mb-5 font-semibold">Sign In</h3>
-              <label className="form-control w-full max-w-xs">
-                <div className="label">
-                  <span className="label-text">Email</span>
-                </div>
-                <input
-                  name="email"
-                  type="email"
-                  placeholder="Your email"
-                  className="input input-bordered w-full max-w-xs"
-                />
-              </label>
-              <label className="form-control w-full max-w-xs">
-                <div className="label">
-                  <span className="label-text">Password</span>
-                </div>
-                <input
-                  name="password"
-                  type="password"
-                  placeholder="password"
-                  className="input input-bordered w-full max-w-xs"
-                />
-              </label>
-              <label className="form-control w-full max-w-xs">
-                <input
-                  name="submit"
-                  type="submit"
-                  value="sign in"
-                  className="btn btn-primary text-white font-semibold mt-8"
-                />
-              </label>
-              <p className="my-3 text-center">or sign in with</p>
-              <div className="flex justify-center gap-5 ">
-                <button
-                  onClick={() => handleSocialLogin('google')}
-                  className="btn rounded-full"
-                >
-                  <FaGoogle className="text-green-500 font-semibold" />
-                </button>
-                <button
-                  onClick={() => handleSocialLogin('github')}
-                  className="btn rounded-full"
-                >
-                  <FaGithub className="text-primary font-semibold" />
-                </button>
-              </div>
-              <p className="text-center mt-3">
-                Don&apos;t have an account?
-                <Link href="/signup" className="text-primary">
-                  Sign Up
-                </Link>
-              </p>
-              <div></div>
-            </form>
+        </div>
+        <div className="navbar-end">
+          <div className="flex space-x-3 items-center">
+          <IoCartOutline className="text-xl"/>
+          <IoSearchSharp className="text-xl"/>
+          <a className="btn btn-outline btn-primary px-8">Appointment</a>
+          {/* <div>
+            <Image alt={session?.data?.user?.name} src={session?.data?.user?.image} height={50} width={50} className="rounded-full"/>
+          </div> */}
+          { session?.status === 'loading' &&
+            <h6>Loading....</h6>
+            }
+          { session?.status === 'unauthenticated' &&
+            <Link href="/login" className="btn btn-primary px-8">Login</Link>
+            }
+          { session?.status === 'authenticated' &&
+            <button className="btn btn-outline btn-ghost px-8" onClick={() => signOut()}>Logout</button>
+            }
           </div>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 };
 
-export default Login;
+const navItems = [
+  {
+    title: "Home",
+    path: "/",
+  },
+  {
+    title: "About",
+    path: "/about",
+  },
+  {
+    title: "Services",
+    path: "/services",
+  },
+  {
+    title: "MyBookings",
+    path: "/my-bookings",
+  },
+  {
+    title: "Blog",
+    path: "/blog",
+  },
+  {
+    title: "Contacts",
+    path: "/contacts",
+  },
+];
+
+export default Navbar;

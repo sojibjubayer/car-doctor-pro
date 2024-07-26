@@ -2,6 +2,7 @@ import { connectDB } from "@/lib/connectDB";
 import bcrypt from 'bcrypt';
 import { NextResponse } from "next/server";
 
+
 export const POST=async(request)=>{
 const newUser=await request.json()
 try{
@@ -20,4 +21,14 @@ catch(error){
     return NextResponse.json({message:'something went wrong',error})
 }
 }
+
+
+
+
+
+
+
+
+
+
 

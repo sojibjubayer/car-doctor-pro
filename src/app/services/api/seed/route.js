@@ -12,7 +12,7 @@ export const GET=async()=>{
        return NextResponse.json({message:"successfully seeded"})
     } catch (error) {
         // console.log(error)
-        return NextResponse.json({message:"something gone wrong",error})
+        return NextResponse.json({message:"something went wrong",error})
         
     }
 }
